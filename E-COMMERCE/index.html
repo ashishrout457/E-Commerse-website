@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModernShop | Real-Time Premium Store & Live Order Hub</title>
+    <meta name="description" content="Explore top-tier electronics, fashion, and accessories with real-time stock tracking, live order status updates, and interactive checkout.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Real-Time Top Announcement / Flash Deal Bar -->
+    <aside class="flash-banner" id="flashBanner" aria-label="Announcement">
+        <div class="flash-content">
+            <span class="flash-badge" id="flashBadge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block; vertical-align:middle;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                FLASH SALE
+            </span>
+            <span class="flash-text" id="flashText">Get 20% OFF with code <strong>SAVE20</strong>! Ends in:</span>
+            <span class="countdown-timer" id="flashTimer">03h : 45m : 12s</span>
+            <button class="flash-shop-btn" id="flashShopBtn" onclick="filterProducts('sale')">Shop Sale ➔</button>
+        </div>
+        <button class="flash-close" onclick="closeFlashBanner()" aria-label="Close Announcement">&times;</button>
+    </aside>
+
+    <!-- Navigation Bar -->
+    <header>
+        <nav aria-label="Main Navigation">
+            <div class="nav-brand" onclick="window.scrollTo({top:0, behavior:'smooth'})" role="button" tabindex="0">
+                <div class="brand-logo-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l2-5h14l2 5"></path>
+                        <path d="M21 9v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9"></path>
+                        <path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"></path>
+                        <path d="M9 21V13h6v8"></path>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <span class="logo">ModernShop</span>
+                    <span class="realtime-pill"><span class="pulse-dot"></span> LIVE SYNC</span>
+                </div>
+            </div>
+
+            <div class="nav-actions">
+                <!-- Wishlist: Symbol with respect to Name -->
+                <button class="nav-btn" onclick="openWishlistModal()" title="View Wishlist" id="wishlistBtn" aria-label="Wishlist">
+                    <svg class="nav-svg text-danger" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                    <span class="nav-btn-label">Wishlist</span>
+                    <span class="nav-badge hidden" id="wishlistCount">0</span>
+                </button>
+
+                <!-- Orders: Symbol with respect to Name -->
+                <button class="nav-btn" onclick="openOrdersModal()" title="Track My Orders" id="ordersBtn" aria-label="My Orders">
+                    <svg class="nav-svg text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                    <span class="nav-btn-label">Orders</span>
+                    <span class="nav-badge hidden" id="ordersCount">0</span>
+                </button>
+
+                <!-- Theme: Symbol with respect to Name -->
+                <button class="nav-btn theme-toggle-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode" id="themeToggleBtn" aria-label="Toggle Theme">
+                    <span id="themeSvgContainer">
+                        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </span>
+                    <span class="nav-btn-label" id="themeLabel">Dark</span>
+                </button>
+
+                <!-- Cart: Symbol with respect to Name -->
+                <button class="nav-btn cart-btn" onclick="toggleCart()" title="View Cart" id="cartBtn" aria-label="Shopping Cart">
+                    <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <span class="nav-btn-label">Cart</span>
+                    <span class="nav-badge cart-badge hidden" id="cartCount">0</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <main>
+        <section class="hero">
+            <div class="hero-backdrop"></div>
+            <div class="hero-content">
+                <div class="hero-tag">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle; margin-right:4px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    2026 Summer Drop
+                </div>
+                <h1>Next-Gen Shopping,<br><span class="gradient-text">Live In Real-Time</span></h1>
+                <p>Real-time cross-tab inventory, live instant order tracking, and curated lifestyle essentials.</p>
+                <div class="hero-actions">
+                    <button class="hero-primary-btn" onclick="document.getElementById('controls').scrollIntoView({behavior: 'smooth'})">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:6px;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                        Explore Products
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item"><strong id="statStockTotal">0</strong><span>Items In Cart</span></div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item"><strong id="statCustomerDelight">0%</strong><span>Customer Delight</span></div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item"><strong id="statLiveUsers">1</strong><span>Live Shoppers</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Controls: Category Filters, Search, Sort & Stock Toggle -->
+        <section class="controls-container" id="controls" aria-label="Product Controls">
+            <div class="controls-top">
+                <!-- Tier 1: Category Filter Pills & In-Stock Switch -->
+                <div class="controls-row controls-row-top">
+                    <div class="categories-nav" role="tablist">
+                        <button class="filter-btn active" onclick="filterProducts('all')" role="tab" aria-selected="true">
+                            <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                            <span>All Products</span>
+                        </button>
+                        <button class="filter-btn sale-btn-pill" onclick="filterProducts('sale')" role="tab" id="saleFilterBtn" aria-selected="false">
+                            <svg class="btn-svg text-warning" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                            <span>⚡ Deals</span>
+                            <span class="sale-count-badge hidden" id="onSaleCountBadge">0</span>
+                        </button>
+                        <button class="filter-btn" onclick="filterProducts('electronics')" role="tab" aria-selected="false">
+                            <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                            <span>Electronics</span>
+                        </button>
+                        <button class="filter-btn" onclick="filterProducts('clothing')" role="tab" aria-selected="false">
+                            <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path></svg>
+                            <span>Fashion</span>
+                        </button>
+                        <button class="filter-btn" onclick="filterProducts('accessories')" role="tab" aria-selected="false">
+                            <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="15" r="4"></circle><circle cx="18" cy="15" r="4"></circle><path d="M14 15a2 2 0 0 0-4 0"></path><line x1="2.5" y1="13" x2="4" y2="7"></line><line x1="21.5" y1="13" x2="20" y2="7"></line></svg>
+                            <span>Accessories</span>
+                        </button>
+                        <label class="stock-filter-toggle" title="Show in-stock items only">
+                            <input type="checkbox" id="inStockOnlyCheckbox" onchange="toggleInStockFilter(this.checked)">
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">In Stock Only</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="controls-divider"></div>
+
+                <!-- Tier 2: Search Input & Sort Dropdown -->
+                <div class="controls-row controls-row-bottom">
+                    <div class="search-wrapper">
+                        <svg class="search-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" id="searchInput" placeholder="Search by name, category, or keyword..." oninput="handleSearch(this.value)" aria-label="Search products">
+                        <button class="clear-search-btn hidden" id="clearSearchBtn" onclick="clearSearch()" aria-label="Clear search">&times;</button>
+                    </div>
+
+                    <div class="sort-wrapper">
+                        <svg class="sort-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="14" y2="12"></line><line x1="4" y1="18" x2="8" y2="18"></line></svg>
+                        <select id="sortSelect" onchange="handleSortChange(this.value)" aria-label="Sort products">
+                            <option value="featured">Sort by: Featured</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="rating">Highest Rated</option>
+                            <option value="stock">Highest Stock</option>
+                        </select>
+                        <svg class="sort-chevron-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Filter Chips -->
+            <div class="active-filters-bar hidden" id="activeFiltersBar">
+                <span class="filter-bar-label">Active Filters:</span>
+                <span id="filterTags"></span>
+                <button class="reset-filters-btn" onclick="resetAllFilters()">Reset All</button>
+            </div>
+        </section>
+
+        <!-- Product Grid Section -->
+        <section class="container" aria-label="Product Catalog">
+            <div class="catalog-header">
+                <h2 id="catalogHeading">All Products</h2>
+                <span class="catalog-count" id="catalogCount">Showing 6 products</span>
+            </div>
+            <div class="product-grid" id="productGrid" role="region" aria-live="polite"></div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="footer-brand">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:6px;"><path d="M3 9l2-5h14l2 5"></path><path d="M21 9v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9"></path><path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"></path><path d="M9 21V13h6v8"></path></svg>
+                    ModernShop
+                </div>
+                <p>Engineered for high performance, real-time synchronization, and modern commerce.</p>
+                <div class="live-status-pill"><span class="pulse-dot"></span> System Status: 100% Operational</div>
+            </div>
+            <div class="footer-col">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="javascript:void(0)" onclick="openOrdersModal()">Track Your Order</a></li>
+                    <li><a href="javascript:void(0)" onclick="openWishlistModal()">Wishlist</a></li>
+                    <li><a href="javascript:void(0)" onclick="showToast('Free 30-day returns on all products.')">Return Policy</a></li>
+                    <li><a href="javascript:void(0)" onclick="showToast('Customer support online 24/7.')">Support Center</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Security & Pay</h4>
+                <div class="payment-badges">
+                    <span>Visa</span>
+                    <span>Mastercard</span>
+                    <span>Apple Pay</span>
+                    <span>COD</span>
+                </div>
+                <p class="crypto-note">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:4px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    256-Bit SSL Encrypted Checkout
+                </p>
+            </div>
+            <div class="footer-col">
+                <h4>Store Administration</h4>
+                <p>Manage inventory, track incoming live orders, and review sales analytics in real-time.</p>
+                <button class="admin-portal-btn" onclick="openAdminLogin()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:6px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    Admin Dashboard
+                </button>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 ModernShop Inc. All rights reserved. Built with Vanilla Web Standards.</p>
+        </div>
+    </footer>
+
+    <!-- Cart Drawer Modal -->
+    <div class="modal" id="cartModal" role="dialog" aria-modal="true" aria-labelledby="cartModalTitle">
+        <div class="modal-content cart-modal-content">
+            <div class="modal-header">
+                <div class="header-left">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="modal-icon" style="vertical-align:middle;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                    <h2 id="cartModalTitle">Your Cart</h2>
+                    <span class="cart-items-pill" id="cartItemsBadge">0 Items</span>
+                </div>
+                <button class="close-btn" onclick="toggleCart()" aria-label="Close Cart">&times;</button>
+            </div>
+
+            <!-- Free shipping meter -->
+            <div class="free-shipping-meter">
+                <div class="meter-text" id="shippingMeterText">Add $50.00 more to unlock <strong>Free Shipping!</strong></div>
+                <div class="meter-bar"><div class="meter-fill" id="shippingMeterFill" style="width: 0%;"></div></div>
+            </div>
+
+            <div class="cart-items-scroll" id="cartItems">
+                <div class="empty-state">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="empty-icon" style="opacity:0.4; margin-bottom:12px;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                    <p>Your shopping cart is currently empty.</p>
+                    <button class="hero-primary-btn btn-sm" onclick="toggleCart()">Browse Products</button>
+                </div>
+            </div>
+
+            <div class="cart-footer-summary">
+                <!-- Promo Code Section -->
+                <div class="coupon-box">
+                    <div class="coupon-input-group">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute; left:1rem; top:50%; transform:translateY(-50%); color:var(--text-muted);"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                        <input type="text" id="couponInput" placeholder="Promo code (e.g. SAVE20)" uppercase>
+                        <button class="coupon-btn" onclick="applyCoupon()">Apply</button>
+                    </div>
+                    <div class="coupon-message hidden" id="couponMessage"></div>
+                </div>
+
+                <div class="summary-breakdown">
+                    <div class="summary-row"><span>Subtotal</span><span id="cartSubtotal">$0.00</span></div>
+                    <div class="summary-row text-success hidden" id="cartDiscountRow"><span>Discount (<span id="discountCodeName"></span>)</span><span id="cartDiscount">-$0.00</span></div>
+                    <div class="summary-row"><span>Estimated Shipping</span><span id="cartShipping">$0.00</span></div>
+                    <div class="summary-row"><span>Estimated Tax (8%)</span><span id="cartTax">$0.00</span></div>
+                    <div class="summary-row total-row"><span>Total</span><span id="cartTotal">$0.00</span></div>
+                </div>
+
+                <button class="checkout-btn" id="proceedToCheckoutBtn" onclick="openCheckoutModal()">
+                    <span>Proceed to Checkout</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-left:6px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div class="modal" id="productModal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+        <div class="modal-content product-detail-content">
+            <button class="close-btn detail-close" onclick="closeProductModal()" aria-label="Close Product View">&times;</button>
+            <div class="detail-grid">
+                <div class="detail-media">
+                    <div class="detail-image-container">
+                        <img id="detailImage" src="" alt="Product Detail Image">
+                        <span class="detail-tag-pill" id="detailTag">Featured</span>
+                    </div>
+                    <div class="social-proof-indicator">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        <span id="detailViewersCount">14 shoppers looking right now</span>
+                    </div>
+                </div>
+
+                <div class="detail-info">
+                    <div class="detail-meta-top">
+                        <span class="detail-category" id="detailCategory">Category</span>
+                        <div class="detail-rating-stars" id="detailRatingStars">
+                            <span style="color:#f59e0b; font-size:1.05rem;">★ ★ ★ ★ ★</span>
+                            <span class="rating-number" id="detailRatingNumber">4.8</span>
+                            <span class="review-count" id="detailReviewCount">(42 reviews)</span>
+                        </div>
+                    </div>
+
+                    <h2 id="detailTitle">Product Title</h2>
+                    
+                    <div class="detail-price-row">
+                        <div class="detail-price" id="detailPrice">$0.00</div>
+                        <div class="detail-stock-badge" id="detailStockBadge">In Stock</div>
+                    </div>
+
+                    <p class="detail-desc" id="detailDesc">Description...</p>
+
+                    <div class="detail-features">
+                        <div class="feature-chip">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                            Next-day Delivery
+                        </div>
+                        <div class="feature-chip">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            2-Year Warranty
+                        </div>
+                        <div class="feature-chip">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                            30-Day Free Return
+                        </div>
+                    </div>
+
+                    <div class="detail-purchase-controls">
+                        <div class="qty-picker">
+                            <button class="qty-btn" onclick="adjustDetailQty(-1)" aria-label="Decrease quantity">-</button>
+                            <span id="detailQtyVal">1</span>
+                            <button class="qty-btn" onclick="adjustDetailQty(1)" aria-label="Increase quantity">+</button>
+                        </div>
+                        <button class="add-btn detail-add-btn" id="detailAddBtn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                            Add to Cart
+                        </button>
+                        <button class="detail-wish-btn" id="detailWishBtn" onclick="toggleDetailWishlist()" title="Add to Wishlist" aria-label="Wishlist Toggle">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="detailWishSvg"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                        </button>
+                    </div>
+
+                    <!-- Verified Reviews & Rating Section -->
+                    <div class="detail-reviews-container">
+                        <div class="reviews-header-row">
+                            <div class="reviews-title">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                Customer Reviews (<span id="detailReviewTotalCount">0</span>)
+                            </div>
+                            <button class="btn-text-sm" onclick="toggleReviewForm()" id="writeReviewBtn">+ Write a Review</button>
+                        </div>
+
+                        <!-- Interactive Review Submission Form -->
+                        <div class="review-form-box hidden" id="reviewFormBox">
+                            <h4>Rate & Review this Product</h4>
+                            <div class="star-rating-picker" id="starPicker">
+                                <span class="picker-star active" data-val="1" onclick="setReviewRating(1)">★</span>
+                                <span class="picker-star active" data-val="2" onclick="setReviewRating(2)">★</span>
+                                <span class="picker-star active" data-val="3" onclick="setReviewRating(3)">★</span>
+                                <span class="picker-star active" data-val="4" onclick="setReviewRating(4)">★</span>
+                                <span class="picker-star active" data-val="5" onclick="setReviewRating(5)">★</span>
+                                <span class="rating-picker-label" id="ratingPickerLabel">5 Stars (Excellent)</span>
+                            </div>
+                            <input type="text" id="reviewAuthor" placeholder="Your name (e.g. Sarah J.)" class="review-input">
+                            <textarea id="reviewComment" placeholder="Write your honest review here..." rows="3" class="review-textarea"></textarea>
+                            
+                            <!-- Customer Review Photo Attachment -->
+                            <div class="review-attach-section">
+                                <label class="review-attach-label">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:4px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                    Attach Photo (Optional)
+                                </label>
+                                <div class="review-attach-inputs">
+                                    <input type="url" id="reviewPhotoUrl" placeholder="Paste image URL (https://...)" class="review-input review-photo-url-input" oninput="handleReviewPhotoUrlChange(this.value)">
+                                    <div class="review-upload-row">
+                                        <label class="btn-upload-label" for="reviewPhotoFile">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                            Upload File
+                                        </label>
+                                        <input type="file" id="reviewPhotoFile" accept="image/*" class="hidden" onchange="handleReviewPhotoFileUpload(event)">
+                                        <span class="upload-hint">PNG, JPG or WebP</span>
+                                    </div>
+                                </div>
+
+                                <!-- Live Photo Attachment Preview -->
+                                <div class="review-photo-preview-wrap hidden" id="reviewPhotoPreviewWrap">
+                                    <div class="preview-thumbnail-box">
+                                        <img id="reviewPhotoPreviewImg" src="" alt="Review Preview" class="review-photo-preview">
+                                        <button type="button" class="review-photo-remove-btn" onclick="removeReviewPhotoAttachment()" title="Remove photo">&times;</button>
+                                    </div>
+                                    <span class="photo-attached-badge">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle; margin-right:3px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                        Photo Attached
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="review-form-actions">
+                                <button class="btn-primary-sm" onclick="submitProductReview()">Submit Review</button>
+                                <button class="btn-text-sm" onclick="toggleReviewForm()">Cancel</button>
+                            </div>
+                        </div>
+
+                        <div class="reviews-list" id="detailReviewsList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Review Photo Lightbox Modal -->
+    <div class="modal review-lightbox-modal" id="reviewLightboxModal" role="dialog" aria-modal="true" aria-label="Customer Photo Full View" onclick="closeReviewPhotoLightbox()" style="display:none;">
+        <div class="lightbox-content" onclick="event.stopPropagation()">
+            <button class="lightbox-close" onclick="closeReviewPhotoLightbox()" aria-label="Close Lightbox">&times;</button>
+            <div class="lightbox-img-wrapper">
+                <img id="lightboxImg" src="" alt="Customer Photo Full View" class="lightbox-img">
+            </div>
+            <div class="lightbox-caption">
+                <div class="lightbox-caption-left">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-success"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    <span id="lightboxAuthor" class="lightbox-author">Customer Photo</span>
+                </div>
+                <span class="lightbox-badge">Verified Customer Upload</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Multi-Step Checkout Modal -->
+    <div class="modal" id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="checkoutModalTitle">
+        <div class="modal-content checkout-modal-content">
+            <div class="modal-header">
+                <div class="header-left">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="modal-icon text-success" style="vertical-align:middle;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    <h2 id="checkoutModalTitle">Secure Checkout</h2>
+                </div>
+                <button class="close-btn" onclick="closeCheckoutModal()" aria-label="Close Checkout">&times;</button>
+            </div>
+
+            <form id="checkoutForm" onsubmit="handleOrderSubmission(event)" class="checkout-grid">
+                <!-- Left Column: Shipping & Payment Details -->
+                <div class="checkout-form-col">
+                    <div class="form-section">
+                        <h3>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px; vertical-align:middle;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            1. Shipping Address
+                        </h3>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label for="custName">Full Name *</label>
+                                <input type="text" id="custName" required placeholder="John Doe">
+                            </div>
+                            <div class="form-col">
+                                <label for="custEmail">Email Address *</label>
+                                <input type="email" id="custEmail" required placeholder="john@example.com">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label for="custAddress">Street Address *</label>
+                                <input type="text" id="custAddress" required placeholder="123 Market St, Suite 400">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label for="custCity">City *</label>
+                                <input type="text" id="custCity" required placeholder="San Francisco">
+                            </div>
+                            <div class="form-col">
+                                <label for="custZip">Postal / Zip Code *</label>
+                                <input type="text" id="custZip" required placeholder="94105">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px; vertical-align:middle;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                            2. Payment Method
+                        </h3>
+                        <div class="payment-method-selector">
+                            <label class="payment-opt selected" onclick="selectPaymentMethod('card')">
+                                <input type="radio" name="payMethod" value="card" checked>
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                                <span>Credit / Debit Card</span>
+                            </label>
+                            <label class="payment-opt" onclick="selectPaymentMethod('cod')">
+                                <input type="radio" name="payMethod" value="cod">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
+                                <span>Cash on Delivery</span>
+                            </label>
+                            <label class="payment-opt" onclick="selectPaymentMethod('digital')">
+                                <input type="radio" name="payMethod" value="digital">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                                <span>Apple / Google Pay</span>
+                            </label>
+                        </div>
+
+                        <div id="cardFieldsSection" class="card-inputs-box">
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <label for="cardNumber">Card Number</label>
+                                    <div class="card-input-wrapper">
+                                        <input type="text" id="cardNumber" placeholder="4242 •••• •••• 4242" maxlength="19" oninput="formatCardNumber(this)">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="card-badge-icon"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <label for="cardExpiry">Expiration (MM/YY)</label>
+                                    <input type="text" id="cardExpiry" placeholder="12/28" maxlength="5" oninput="formatExpiry(this)">
+                                </div>
+                                <div class="form-col">
+                                    <label for="cardCvc">CVC / CVV</label>
+                                    <input type="password" id="cardCvc" placeholder="•••" maxlength="4">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Order Review & Submit -->
+                <div class="checkout-summary-col">
+                    <div class="order-review-box">
+                        <h3>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px; vertical-align:middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                            Order Summary
+                        </h3>
+                        <div class="order-review-items" id="checkoutReviewItems"></div>
+
+                        <div class="summary-breakdown">
+                            <div class="summary-row"><span>Items Subtotal</span><span id="checkoutSubtotal">$0.00</span></div>
+                            <div class="summary-row text-success hidden" id="checkoutDiscountRow"><span>Discount</span><span id="checkoutDiscount">-$0.00</span></div>
+                            <div class="summary-row"><span>Shipping</span><span id="checkoutShipping">$0.00</span></div>
+                            <div class="summary-row"><span>Estimated Tax</span><span id="checkoutTax">$0.00</span></div>
+                            <div class="summary-row total-row"><span>Order Total</span><span id="checkoutTotal">$0.00</span></div>
+                        </div>
+
+                        <div class="ssl-guarantee">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-success" style="vertical-align:middle; flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+                            <span>Guaranteed safe checkout with 256-Bit SSL Encryption</span>
+                        </div>
+
+                        <button type="submit" class="place-order-btn" id="placeOrderSubmitBtn">
+                            <span id="placeOrderBtnText">Confirm & Place Order</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle; margin-left:6px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Live Order Tracker & Receipt Modal -->
+    <div class="modal" id="orderTrackingModal" role="dialog" aria-modal="true" aria-labelledby="trackOrderTitle">
+        <div class="modal-content tracking-modal-content">
+            <div class="modal-header">
+                <div class="header-left">
+                    <div class="live-pulse-container"><span class="pulse-dot"></span></div>
+                    <div>
+                        <h2 id="trackOrderTitle">Real-Time Order Tracker</h2>
+                        <span class="order-id-label" id="trackOrderId">Order #ORD-00000</span>
+                    </div>
+                </div>
+                <button class="close-btn" onclick="closeTrackingModal()" aria-label="Close Tracker">&times;</button>
+            </div>
+
+            <!-- Stepper Progress Bar -->
+            <div class="tracking-stepper-container">
+                <div class="tracking-progress-line" id="trackingProgressLine"></div>
+                <div class="step-point active" id="step-placed">
+                    <div class="step-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <div class="step-text-wrap">
+                        <div class="step-label">Order Placed</div>
+                        <div class="step-time" id="stepTimePlaced">Completed</div>
+                    </div>
+                </div>
+                <div class="step-point" id="step-processing">
+                    <div class="step-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    </div>
+                    <div class="step-text-wrap">
+                        <div class="step-label">Processing</div>
+                        <div class="step-time" id="stepTimeProcessing">In Queue</div>
+                    </div>
+                </div>
+                <div class="step-point" id="step-shipped">
+                    <div class="step-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                    </div>
+                    <div class="step-text-wrap">
+                        <div class="step-label">Packed & Shipped</div>
+                        <div class="step-time" id="stepTimeShipped">Pending</div>
+                    </div>
+                </div>
+                <div class="step-point" id="step-delivery">
+                    <div class="step-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                    </div>
+                    <div class="step-text-wrap">
+                        <div class="step-label">Out for Delivery</div>
+                        <div class="step-time" id="stepTimeDelivery">Pending</div>
+                    </div>
+                </div>
+                <div class="step-point" id="step-delivered">
+                    <div class="step-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    </div>
+                    <div class="step-text-wrap">
+                        <div class="step-label">Delivered</div>
+                        <div class="step-time" id="stepTimeDelivered">Pending</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-meta-banner">
+                <div class="meta-block">
+                    <span class="meta-label">Current Status</span>
+                    <span class="meta-value status-pill" id="trackStatusBadge">Processing</span>
+                </div>
+                <div class="meta-block">
+                    <span class="meta-label">Estimated Delivery</span>
+                    <span class="meta-value" id="trackEta">Tomorrow by 5:00 PM</span>
+                </div>
+                <div class="meta-block">
+                    <span class="meta-label">Shipping Destination</span>
+                    <span class="meta-value" id="trackAddress">123 Market St, SF</span>
+                </div>
+            </div>
+
+            <!-- Receipt Breakdown -->
+            <div class="tracking-details-grid">
+                <div class="tracking-items-list" id="trackItemsList"></div>
+                <div class="tracking-summary-card">
+                    <h4>Receipt Breakdown</h4>
+                    <div class="summary-row"><span>Items:</span><span id="trackReceiptSubtotal">$0.00</span></div>
+                    <div class="summary-row"><span>Discount:</span><span id="trackReceiptDiscount">$0.00</span></div>
+                    <div class="summary-row"><span>Shipping:</span><span id="trackReceiptShipping">$0.00</span></div>
+                    <div class="summary-row"><span>Taxes:</span><span id="trackReceiptTax">$0.00</span></div>
+                    <div class="summary-row total-row"><span>Total Paid:</span><span id="trackReceiptTotal">$0.00</span></div>
+                    <div class="track-actions-row">
+                        <button class="btn-secondary-outline" onclick="window.print()" style="width:100%; justify-content:center;">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                            Print Invoice
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer "My Orders" History Modal -->
+    <div class="modal" id="ordersHistoryModal" role="dialog" aria-modal="true" aria-labelledby="ordersHistoryTitle">
+        <div class="modal-content history-modal-content">
+            <div class="modal-header">
+                <div class="header-left">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="modal-icon text-primary" style="vertical-align:middle;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <h2 id="ordersHistoryTitle">My Orders History</h2>
+                </div>
+                <button class="close-btn" onclick="closeOrdersModal()" aria-label="Close Orders">&times;</button>
+            </div>
+            <div class="orders-history-container" id="ordersHistoryList"></div>
+        </div>
+    </div>
+
+    <!-- Customer Wishlist Modal -->
+    <div class="modal" id="wishlistModal" role="dialog" aria-modal="true" aria-labelledby="wishlistModalTitle">
+        <div class="modal-content wishlist-modal-content">
+            <div class="modal-header">
+                <div class="header-left">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="#ef4444" stroke="#ef4444" stroke-width="2" class="modal-icon text-danger" style="vertical-align:middle;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    <h2 id="wishlistModalTitle">My Wishlist</h2>
+                    <span class="cart-items-pill" id="wishlistItemsBadge">0 Items</span>
+                </div>
+                <button class="close-btn" onclick="closeWishlistModal()" aria-label="Close Wishlist">&times;</button>
+            </div>
+            <div class="wishlist-items-container" id="wishlistItemsList"></div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div class="modal" id="adminLoginModal" role="dialog" aria-modal="true" aria-labelledby="adminLoginTitle">
+        <div class="modal-content login-modal-content">
+            <button class="close-btn" onclick="closeAdminLoginModal()" aria-label="Close Login">&times;</button>
+            <div class="login-header">
+                <div class="lock-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
+                <h2 id="adminLoginTitle">Store Manager Portal</h2>
+                <p>Enter administrative passkey to inspect real-time orders & inventory</p>
+            </div>
+            <div class="login-form">
+                <div class="input-group">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute; left:1rem; top:50%; transform:translateY(-50%); color:var(--text-muted);"><path d="M21 2l-2 2m-1.5 1.5L16 7l-3 3-4-1-4 4 3 3-1 4 4-1 4 4 4-4-1-4 3-3 1.5-1.5z"></path></svg>
+                    <input type="password" id="adminPassword" placeholder="Enter passkey..." onkeyup="if(event.key === 'Enter') verifyAdmin()">
+                </div>
+                <span id="loginError" class="login-error hidden">Invalid passkey. Access denied.</span>
+                <button class="login-btn" onclick="verifyAdmin()">Authenticate Access</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upgraded Admin Dashboard Modal -->
+    <div class="modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminBrandTitle">
+        <div class="modal-content admin-layout">
+            <!-- Header / Top Bar -->
+            <header class="admin-header-bar">
+                <div class="admin-top-row">
+                    <div class="admin-brand">
+                        <div class="brand-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l2-5h14l2 5"></path><path d="M21 9v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9"></path><path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"></path><path d="M9 21V13h6v8"></path></svg>
+                        </div>
+                        <span id="adminBrandTitle">Store Operations Hub</span>
+                        <span class="live-admin-pill"><span class="pulse-dot"></span> REAL-TIME</span>
+                    </div>
+
+                    <div class="admin-header-actions">
+                        <button class="admin-exit-btn" onclick="closeAdminPanel()" title="Exit Admin Portal">
+                            <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+
+                <nav class="admin-nav" role="tablist">
+                    <button class="nav-item active" onclick="switchAdminTab('overview')" id="btn-tab-overview">
+                        <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+                        Overview
+                    </button>
+                    <button class="nav-item" onclick="switchAdminTab('orders')" id="btn-tab-orders">
+                        <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                        Live Orders (<span id="adminOrderCounter">0</span>)
+                    </button>
+                    <button class="nav-item" onclick="switchAdminTab('inventory')" id="btn-tab-inventory">
+                        <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                        Product Inventory
+                    </button>
+                    <button class="nav-item sale-nav-pill" onclick="switchAdminTab('sales')" id="btn-tab-sales">
+                        <svg class="btn-svg text-warning" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                        ⚡ Flash Sales Hub <span class="badge-pill-mini live-pill hidden" id="adminSaleStatusPill">LIVE</span>
+                    </button>
+                    <button class="nav-item" onclick="switchAdminTab('form')" id="btn-tab-form">
+                        <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Add Product
+                    </button>
+                    <button class="nav-item" onclick="switchAdminTab('security')" id="btn-tab-security">
+                        <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        Passkey & Security
+                    </button>
+                </nav>
+            </header>
+
+            <!-- Main Workspace -->
+            <main class="admin-main">
+                <!-- TAB 1: Overview & Real-Time Analytics -->
+                <div id="adminOverviewView" class="admin-view">
+                    <div class="view-header">
+                        <div>
+                            <h2>Real-Time Performance</h2>
+                            <p class="view-subtitle">Live sales, order volume, and instant inventory alerts</p>
+                        </div>
+                        <button class="btn-refresh" onclick="renderAdminOverview()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:4px;"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                            Sync
+                        </button>
+                    </div>
+
+                    <!-- Metrics Cards -->
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon revenue-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-title">Gross Revenue</span>
+                                <h3 class="metric-value" id="metricGrossRevenue">$0.00</h3>
+                                <span class="metric-sub text-success">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                                    Live updated
+                                </span>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon orders-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-title">Total Orders</span>
+                                <h3 class="metric-value" id="metricTotalOrders">0</h3>
+                                <span class="metric-sub" id="metricOrdersToday">Across all channels</span>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon aov-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-title">Average Order Value</span>
+                                <h3 class="metric-value" id="metricAov">$0.00</h3>
+                                <span class="metric-sub">Per transaction</span>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon stock-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-title">Low Stock Alerts</span>
+                                <h3 class="metric-value" id="metricLowStock">0 Items</h3>
+                                <span class="metric-sub text-danger" id="metricLowStockLabel">&le; 5 units left</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Live Orders Feed in Analytics -->
+                    <div class="admin-section-box">
+                        <div class="section-box-header">
+                            <h3>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:6px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                                Real-Time Sales Stream
+                            </h3>
+                            <button class="btn-text-sm" onclick="switchAdminTab('orders')">View All Orders &rarr;</button>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Customer</th>
+                                        <th>Time</th>
+                                        <th>Items</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminRecentSalesTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: Live Orders Management -->
+                <div id="adminOrdersView" class="admin-view" style="display:none;">
+                    <div class="view-header">
+                        <div>
+                            <h2>Customer Orders Hub</h2>
+                            <p class="view-subtitle">Change statuses in real-time to broadcast to customer tracker</p>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn-text" onclick="clearAllOrders()" style="color:var(--danger); border:1px solid rgba(239,68,68,0.25); border-radius:var(--radius-sm); padding:5px 10px; font-size:0.8rem; font-weight:600; cursor:pointer;" title="Remove all orders">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:4px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                Clear All Orders
+                            </button>
+                            <span class="badge-pill" id="totalOrdersBadge">0 Undelivered</span>
+                        </div>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Customer & Email</th>
+                                    <th>Destination</th>
+                                    <th>Items Ordered</th>
+                                    <th>Total Paid</th>
+                                    <th>Live Status Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminOrdersTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 3: Product Inventory -->
+                <div id="adminInventoryView" class="admin-view" style="display:none;">
+                    <div class="view-header">
+                        <div>
+                            <h2>Inventory Catalog</h2>
+                            <p class="view-subtitle">Manage active products, price tags, and live stock allocations</p>
+                        </div>
+                        <div class="header-actions">
+                            <span class="badge-pill" id="totalProdCount">0 Items</span>
+                        </div>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Category</th>
+                                    <th>Stock Level</th>
+                                    <th>Price</th>
+                                    <th>Rating</th>
+                                    <th style="text-align:right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminProductTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 4: Add / Edit Product Form -->
+                <div id="adminFormView" class="admin-view" style="display:none;">
+                    <div class="admin-form-wrapper">
+                        <div class="admin-form-container">
+                            <div class="admin-form-header">
+                                <div class="form-header-left">
+                                    <div class="form-badge-icon">
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                    </div>
+                                    <div>
+                                        <h2 id="formTitle" style="font-size: 1.25rem; margin-bottom: 2px;">Add New Product</h2>
+                                        <p class="view-subtitle" style="font-size: 0.82rem; margin: 0;">Broadcasts live updates across the store catalog immediately</p>
+                                    </div>
+                                </div>
+                                <button class="btn-text form-cancel-btn" onclick="switchAdminTab('inventory')" title="Cancel and return to inventory">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:4px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                    Cancel
+                                </button>
+                            </div>
+
+                            <input type="hidden" id="editId">
+                            <div class="form-row">
+                                <div class="form-col" style="flex: 2;">
+                                    <label for="editName">Product Name *</label>
+                                    <input type="text" id="editName" placeholder="e.g. Sony Wireless Headphones" required>
+                                </div>
+                                <div class="form-col" style="flex: 1.2;">
+                                    <label for="editCat">Category *</label>
+                                    <select id="editCat">
+                                        <option value="electronics">Electronics</option>
+                                        <option value="clothing">Fashion</option>
+                                        <option value="accessories">Accessories</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <label for="editPrice">Price ($) *</label>
+                                    <input type="number" id="editPrice" placeholder="99.99" step="0.01" min="0" required>
+                                </div>
+                                <div class="form-col">
+                                    <label for="editStock">Available Stock (Units) *</label>
+                                    <input type="number" id="editStock" placeholder="25" min="0" required>
+                                </div>
+                                <div class="form-col">
+                                    <label for="editTag">Badge / Tag</label>
+                                    <select id="editTag">
+                                        <option value="Featured">Featured</option>
+                                        <option value="Hot Deal">Hot Deal</option>
+                                        <option value="Best Seller">Best Seller</option>
+                                        <option value="New Drop">New Drop</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <label for="editImg">Image URL *</label>
+                                    <input type="url" id="editImg" placeholder="https://images.unsplash.com/..." required>
+                                    <small class="form-helper">Paste an image link or leave empty for default</small>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <label for="editDesc">Product Description *</label>
+                                    <textarea id="editDesc" rows="3" placeholder="Detailed product specifications, materials, and highlights..." required></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-actions-row" style="margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid var(--card-border);">
+                                <button class="btn-submit" onclick="saveProductData()">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:6px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                                    Save & Broadcast Changes
+                                </button>
+                                <button class="btn-text" onclick="switchAdminTab('inventory')">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 5: Flash Sales & Deals Hub -->
+                <div id="adminSalesView" class="admin-view" style="display:none;">
+                    <div class="view-header">
+                        <div>
+                            <h2>⚡ Flash Sales & Event Campaigns</h2>
+                            <p class="view-subtitle">Launch limited-time flash sales with custom discounts, live timers, and select discounted items</p>
+                        </div>
+                        <div class="header-actions">
+                            <span class="sale-live-pill" id="saleStatusIndicatorPill">● SALE INACTIVE</span>
+                        </div>
+                    </div>
+
+                    <!-- Flash Sale Control Panel -->
+                    <div class="sales-manager-grid">
+                        <!-- Left: Sale Configuration Form -->
+                        <div class="sale-config-card">
+                            <div class="card-section-title">
+                                <h3>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:6px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                                    1. Campaign Details
+                                </h3>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <label for="saleCampaignTitle">Campaign Title *</label>
+                                    <input type="text" id="saleCampaignTitle" value="MID-SEASON MEGA FLASH SALE" placeholder="e.g. Black Friday Flash Drop">
+                                </div>
+                            </div>
+
+                            <div class="form-row-2col">
+                                <div class="form-col">
+                                    <label for="saleDiscountSelect">Discount Rate *</label>
+                                    <select id="saleDiscountSelect" onchange="updateSalePricePreviews()">
+                                        <option value="10">10% OFF</option>
+                                        <option value="15">15% OFF</option>
+                                        <option value="20">20% OFF</option>
+                                        <option value="25" selected>25% OFF</option>
+                                        <option value="30">30% OFF</option>
+                                        <option value="40">40% OFF</option>
+                                        <option value="50">50% OFF (Mega Deal)</option>
+                                        <option value="60">60% OFF</option>
+                                        <option value="70">70% OFF (Clearance)</option>
+                                    </select>
+                                </div>
+                                <div class="form-col">
+                                    <label for="salePromoCode">Promo Code (Optional)</label>
+                                    <input type="text" id="salePromoCode" value="SAVE20" placeholder="e.g. SAVE20">
+                                </div>
+                            </div>
+
+                            <div class="card-section-title" style="margin-top:1.2rem;">
+                                <h3>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:6px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    2. Duration & Countdown Timer
+                                </h3>
+                            </div>
+
+                            <div class="duration-presets-row">
+                                <span class="preset-label">Quick Presets:</span>
+                                <div class="preset-btns-group">
+                                    <button type="button" class="preset-btn" onclick="setSaleDurationPreset(1)">1h</button>
+                                    <button type="button" class="preset-btn active" onclick="setSaleDurationPreset(3)">3h</button>
+                                    <button type="button" class="preset-btn" onclick="setSaleDurationPreset(6)">6h</button>
+                                    <button type="button" class="preset-btn" onclick="setSaleDurationPreset(12)">12h</button>
+                                    <button type="button" class="preset-btn" onclick="setSaleDurationPreset(24)">24h</button>
+                                    <button type="button" class="preset-btn" onclick="setSaleDurationPreset(48)">48h</button>
+                                </div>
+                            </div>
+
+                            <div class="form-row" style="margin-top:0.8rem;">
+                                <div class="form-col">
+                                    <label for="saleEndTimeInput">Sale End Date & Time</label>
+                                    <input type="datetime-local" id="saleEndTimeInput" onchange="handleCustomEndTimeChange()">
+                                </div>
+                            </div>
+
+                            <div class="live-timer-preview-box">
+                                <span>Live Timer Preview:</span>
+                                <strong id="adminSaleTimerDisplay">03h : 00m : 00s</strong>
+                            </div>
+
+                            <div class="sale-actions-box">
+                                <button class="btn-launch-sale" id="btnLaunchSale" onclick="launchFlashSaleLive()">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle; margin-right:6px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                                    🚀 Launch & Broadcast Flash Sale Live
+                                </button>
+                                <button class="btn-end-sale" id="btnEndSale" onclick="endFlashSaleNow()">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+                                    ⏹️ End Sale Now
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Right: Select Products for Sale -->
+                        <div class="sale-products-card">
+                            <div class="sale-products-header">
+                                <div>
+                                    <h3>3. Select Products for Sale</h3>
+                                    <p class="view-subtitle">Check items that will receive the sale price & badge</p>
+                                </div>
+                                <div class="header-actions">
+                                    <button type="button" class="btn-select-action" onclick="toggleSelectAllSaleProducts(true)">Select All</button>
+                                    <button type="button" class="btn-select-action" onclick="toggleSelectAllSaleProducts(false)">Clear All</button>
+                                </div>
+                            </div>
+
+                            <div class="table-wrapper sale-table-wrapper">
+                                <table class="admin-table sale-selection-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:36px; text-align:center;">
+                                                <input type="checkbox" id="selectAllSaleCheckbox" onchange="toggleSelectAllSaleProducts(this.checked)" title="Select all products">
+                                            </th>
+                                            <th style="width:35%;">Product</th>
+                                            <th style="width:15%;">Category</th>
+                                            <th style="width:16%;">Regular</th>
+                                            <th style="width:18%;">Sale Price</th>
+                                            <th style="width:16%;">Stock</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="saleProductSelectionTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 6: Security & Change Passkey -->
+                <div id="adminSecurityView" class="admin-view" style="display:none;">
+                    <div class="view-header">
+                        <div>
+                            <h2>Security & Administrative Access</h2>
+                            <p class="view-subtitle">Update your store manager passkey and protect administrative controls</p>
+                        </div>
+                    </div>
+
+                    <div class="security-card">
+                        <div class="security-header">
+                            <div class="security-shield-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 style="font-size:1.1rem; margin-bottom:2px;">Change Admin Passkey</h3>
+                                <p class="view-subtitle">Set a personalized passkey to authenticate your next login session</p>
+                            </div>
+                        </div>
+
+                        <form id="changePasskeyForm" onsubmit="event.preventDefault(); updateAdminPasskey();" class="security-form">
+                            <div class="form-col" style="margin-bottom: 0.8rem;">
+                                <label for="currentPasskeyInput" style="font-size:0.82rem; font-weight:600; color:var(--text-muted); margin-bottom:4px; display:block;">Current Passkey *</label>
+                                <input type="password" id="currentPasskeyInput" placeholder="Enter current passkey..." required autocomplete="current-password" style="width:100%; padding:0.7rem 0.9rem; border-radius:var(--radius-sm); border:1px solid var(--card-border); background:var(--bg-secondary); color:var(--text-color); outline:none;">
+                            </div>
+
+                            <div class="form-row-2col" style="margin-bottom: 0.8rem;">
+                                <div class="form-col">
+                                    <label for="newPasskeyInput" style="font-size:0.82rem; font-weight:600; color:var(--text-muted); margin-bottom:4px; display:block;">New Passkey *</label>
+                                    <input type="password" id="newPasskeyInput" placeholder="New passkey (min 4 chars)..." required autocomplete="new-password" style="width:100%; padding:0.7rem 0.9rem; border-radius:var(--radius-sm); border:1px solid var(--card-border); background:var(--bg-secondary); color:var(--text-color); outline:none;">
+                                </div>
+                                <div class="form-col">
+                                    <label for="confirmPasskeyInput" style="font-size:0.82rem; font-weight:600; color:var(--text-muted); margin-bottom:4px; display:block;">Confirm New Passkey *</label>
+                                    <input type="password" id="confirmPasskeyInput" placeholder="Re-enter new passkey..." required autocomplete="new-password" style="width:100%; padding:0.7rem 0.9rem; border-radius:var(--radius-sm); border:1px solid var(--card-border); background:var(--bg-secondary); color:var(--text-color); outline:none;">
+                                </div>
+                            </div>
+
+                            <div id="passkeyFeedbackMsg" class="passkey-feedback hidden" style="margin-bottom: 0.8rem;"></div>
+
+                            <div class="security-actions" style="display:flex; align-items:center; gap:12px; margin-top:0.6rem;">
+                                <button type="submit" class="btn-primary" style="padding:0.7rem 1.6rem; font-weight:700; display:inline-flex; align-items:center; gap:6px;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                                    Update Passkey
+                                </button>
+                                <button type="button" class="btn-text" onclick="document.getElementById('changePasskeyForm').reset(); document.getElementById('passkeyFeedbackMsg').classList.add('hidden');">
+                                    Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Live Toast Container -->
+    <div id="toast-container" aria-live="assertive" role="log"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
